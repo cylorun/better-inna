@@ -11,7 +11,7 @@ const getModuleId = () => {
 const getAverageGrade = async () => {
     const moduleId = getModuleId();
     if (moduleId === null) {
-        return "Something went wrong :/"
+        return null;
     }
 
     const grades = await fetchGrades(moduleId);
@@ -24,6 +24,10 @@ const getAverageGrade = async () => {
             final+= grade * weight
         }
     });
+
+    if (isNaN(final)) {
+        return null;
+    }
 
     return final;
 }
@@ -97,17 +101,16 @@ const onPageChange = async () => {
 
     if (window.location.href.endsWith('Grades')) {
         setTimeout(async () => {
-            const banner = document.createElement('p');
-            banner.id = "avg-grade"
-
+            const avgGradesText = document.createElement('p');
+            const gradesTable = getGradesTable();
             const avg = await getAverageGrade();
-            banner.innerHTML = `<b>Average Grade: ${avg.toFixed(1)} <b>`
-            const a = getGradesTable();
 
-            a.prepend(banner);
+            avgGradesText.id = "avg-grade"
+            avgGradesText.innerHTML = `<b>Average Grade: ${avg === null ? "Something went wrong :(" : avg.toFixed(1)} <b>`
 
-            const tbody = a.getElementsByTagName("tbody")[0];
+            gradesTable.prepend(avgGradesText);
 
+            const tbody = gradesTable.getElementsByTagName("tbody")[0];
             const rows = tbody.getElementsByTagName("tr");
 
             for (let i = 0; i < rows.length; i++) {
@@ -118,7 +121,6 @@ const onPageChange = async () => {
                     gradeCell.style.fontWeight = "bold";
                 }
             }
-
         }, 1000);
     } else {
         const bannerEl = document.getElementById('avg-grade');
