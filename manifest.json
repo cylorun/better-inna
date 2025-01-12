@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Better INNA",
-    "version": "1.0",
+    "version": "1.0.1",
     "description": "Displays some extra statistics on INNA",
     "permissions": ["cookies", "activeTab", "storage"],
     "host_permissions": ["https://*/*"], 
