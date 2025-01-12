@@ -41,25 +41,84 @@ const fetchGrades = async (moduleId) => {
     }
 };
 
+const getGradeColor = (gradeStr) => {
+    const grade = parseFloat(gradeStr.replace(',', '.'));
+
+    if (grade === 10) {
+        return 'blue'
+    }
+    else if (grade >= 9) {
+        return 'green';
+    } else if (grade >= 7) {
+        return 'lightgreen';
+    } else if (grade >= 5) {
+        return 'orange';
+    } else if (grade > 0) {
+        return 'red';
+    } else {
+        return 'darkred';
+    }
+};
+
+
+
+const getGradesTable = () => {
+    return document.querySelector('.width100.table.table-hover.student-grades-table');
+}
+
+const applyDarkMode = () => {
+    const style = document.createElement('style');
+    style.textContent = `
+        html, body {
+            background-color: black !important; /* Ensure the background color is applied */
+            color: white !important;
+        }
+
+        table, tr, td, th, .inline-block {
+            background-color: black !important; /* Target tables, rows, and cells specifically */
+            color: white !important;
+        }
+        
+    `;
+    document.head.appendChild(style);
+}
+
 const onPageChange = async () => {
+    setTimeout(() => {
+        chrome.storage.sync.get('theme', (v) => {
+            v = v.theme
+            console.log('theme', v)
+            if (v === "dark") {
+                applyDarkMode();
+            }
+        })
+    }, 500);
+
+
     if (window.location.href.endsWith('Grades')) {
         setTimeout(async () => {
-            const banner = document.createElement('div');
-            banner.style.position = 'fixed';
-            banner.style.top = '0';
-            banner.style.width = '100%';
-            banner.style.backgroundColor = '#ffcc00';
-            banner.style.color = '#000';
-            banner.style.padding = '10px';
-            banner.style.textAlign = 'center';
-            banner.style.zIndex = '1000';
-            banner.style.marginBottom = '20px';
+            const banner = document.createElement('p');
             banner.id = "avg-grade"
 
             const avg = await getAverageGrade();
-            banner.textContent = 'Average grade: ' + avg;
+            banner.innerHTML = `<b>Average Grade: ${avg.toFixed(1)} <b>`
+            const a = getGradesTable();
 
-            document.body.prepend(banner);
+            a.prepend(banner);
+
+            const tbody = a.getElementsByTagName("tbody")[0];
+
+            const rows = tbody.getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+                const gradeCell = cells[4];
+                if (gradeCell) {
+                    gradeCell.style.color = getGradeColor(gradeCell.textContent);
+                    gradeCell.style.fontWeight = "bold";
+                }
+            }
+
         }, 1000);
     } else {
         const bannerEl = document.getElementById('avg-grade');
