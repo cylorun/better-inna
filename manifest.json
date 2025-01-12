@@ -19,9 +19,9 @@
     "browser_action": {
         "default_popup": "popup.html",
         "default_icon": {
-            "16": "betterinna-16x.png",
-            "48": "betterinna-48x.png",
-            "128": "betterinna-128x.png"
+            "16": "icons/betterinna-16x.png",
+            "48": "icons/betterinna-48x.png",
+            "128": "icons/betterinna-128x.png"
         }
     }
 }
