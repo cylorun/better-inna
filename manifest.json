@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "name": "Better INNA",
+    "version": "1.0",
+    "description": "Displays some extra statistics on INNA",
+    "permissions": ["cookies", "activeTab", "storage"],
+    "host_permissions": ["https://*/*"], 
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "better_inna@cylorun.com",
+            "strict_min_version": "91.0" 
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://nam.inna.is/Components/Students/Students.html*"],
+            "js": ["content.js"]
+        }
+    ],
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icon.png",
+            "48": "icon.png",
+            "128": "icon.png"
+        }
+    }
+}
